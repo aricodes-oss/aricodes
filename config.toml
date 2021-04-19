@@ -2,3 +2,7 @@ baseURL = "https://aricodes.net/"
 languageCode = "en-us"
 title = "Ari Codes"
 theme = "terminal"
+
+[params]
+contentTypeName = "posts"
+themeColor = "blue"
