@@ -1,4 +1,4 @@
-baseURL = "https://aricodes.net/"
+baseURL = "/"
 languageCode = "en-us"
 title = "Ari Codes"
 theme = "terminal"
@@ -6,3 +6,29 @@ theme = "terminal"
 [params]
 contentTypeName = "posts"
 themeColor = "blue"
+fullWidthTheme = false
+centerTheme = false
+
+[params.twitter]
+creator = "realwillowtw"
+site = "aricodes.net"
+
+[languages]
+
+[languages.en]
+name = "English"
+
+[languages.en.params.logo]
+logoText = "Ari Codes"
+logoHomeLink = "/"
+
+[languages.en.menu]
+[[languages.en.menu.main]]
+identifier = "about"
+name = "About"
+url = "/about"
+
+[[languages.en.menu.main]]
+identifier = "contact"
+name = "Contact Information"
+url = "/contact"
