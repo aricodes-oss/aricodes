@@ -28,9 +28,9 @@ With [Poetry](https://python-poetry.org/), things look a lot more like using `np
 
 Installing Poetry is as simple as running
 
-```bash
+{{< code language="bash" >}}
 $ pip install --user poetry
-```
+{{< /code >}}
 
 in your terminal. After that, you should have the `poetry` command available to you. If you don't, you may need to add `$HOME/.local/bin` to your `PATH`.
 
@@ -42,26 +42,60 @@ export PATH="$PATH:$HOME/.local/bin"
 
 Ready for this one?
 
-```bash
+{{< code language="bash" >}}
 $ poetry new project-name
-```
+{{< /code >}}
 
 Revolutionary. For the purposes of this article, we'll call our project `first-steps`, which changes our command above to
 
-```bash
+{{< code language="bash" >}}
 $ poetry new first-steps
 Created package first_steps in first-steps
-```
+{{< /code >}}
 
 Great! Let's take a look at what's in this directory.
 
-```bash
+{{< code language="bash" >}}
 $ cd first-steps && ls
 first_steps  pyproject.toml  README.rst  tests
-```
+{{< /code >}}
 
 `first_steps` is the directory where all of our code is going to be stored, and the name of our package. If somebody installs this package, they refer to it in their code by that name. This typically looks like `from first_steps import something`.
 
 `pyproject.toml` is the package configuration file. The vast majority of the time, you're not going to be editing this manually.
 
 ## Building our package
+
+For simplicity's sake, we're going to be making a package that does exactly one thing and does it well: it increments a number. We'll be providing both a CLI utility and a programmatic interface so that developers of all creeds can use our revolutionary module.
+
+We'll start with the programmatic interface! Create `first_steps/increment.py` and fill it out as follows
+
+{{< code language="python" title="first_steps/increment.py" >}}
+def increment(num: int):
+  return num + 1
+{{< /code >}}
+
+If you have no idea how to read that code, I would strongly recommend checking out my post on [learning to code](/posts/i-want-to-learn-to-code/) before this one.
+
+Right now, users of your package would have to import this by typing `from first_steps.increment import increment`. That's a bit too wordy for my tastes, so let's go change that.
+
+{{< code language="python" title="first_steps/\_\_init\_\_.py" >}}
+from .increment import increment
+{{< /code >}}
+
+You can test this
+
+Now it's just `from first_steps import increment`. Easy! Now all we need is a commandline interface. Let's over-engineer the shit out of it so we can tour more of Poetry's features.
+
+## Over-Engineering a CLI
+
+[click](https://pypi.org/project/click/) is an _excellent_ package for building fully featured and complex commandline interfaces with minimal overhead and an easy learning curve. For this package, we do not need it at all. We're going to use it anyways though, because we need to learn two things about working with Poetry:
+
+ 1. Managing dependencies
+ 2. Exporting a command from your package
+
+Let's start by initializing our project's virtual environment and adding a dependency on `click`. Virtual environments are handled automatically and transparently with `poetry`, so there's no need to worry about juggling them yourself.
+
+{{< code language="bash" >}}
+$ poetry add click
+{{< /code >}}
