@@ -18,7 +18,7 @@ Fortunately, there is an easier solution to all of this! It's called [Poetry](ht
 
 # Introducing Poetry
 
-If you're a web developer or somebody that works with modern Javascript a lot, you're probably familiar with `npm`. `npm` is the *N*ode *P*ackage *M*anager - it lets you manage your project and the dependencies for it. It does this by installing the packages you specify into the `node_modules` directory in your project, so that each project gets its own clean copy of the dependencies it uses.
+If you're a web developer or somebody that works with modern Javascript a lot, you're probably familiar with `npm`. `npm` is the **N**ode **P**ackage **M**anager - it lets you manage your project and the dependencies for it. It does this by installing the packages you specify into the `node_modules` directory in your project, so that each project gets its own clean copy of the dependencies it uses.
 
 In Python, the package manager is called `pip`. `pip`...installs packages. That's about it. Coming from JS dev, it isn't immediately obvious how to create a new Python project and add dependencies to it. Conventional wisdom is to create a `setup.py` file and new "virtual environment" using the `virtualenv` tool. That creates an isolated environment for your Python project and stores the dependencies there without having to mess with your system Python environment.
 
@@ -34,6 +34,10 @@ $ pip install --user poetry
 
 in your terminal. After that, you should have the `poetry` command available to you. If you don't, you may need to add `$HOME/.local/bin` to your `PATH`.
 
+{{< code language="bash" title="~/.bashrc" >}}
+export PATH="$PATH:$HOME/.local/bin"
+{{< /code >}}
+
 ## Starting a new project
 
 Ready for this one?
@@ -46,4 +50,18 @@ Revolutionary. For the purposes of this article, we'll call our project `first-s
 
 ```bash
 $ poetry new first-steps
+Created package first_steps in first-steps
 ```
+
+Great! Let's take a look at what's in this directory.
+
+```bash
+$ cd first-steps && ls
+first_steps  pyproject.toml  README.rst  tests
+```
+
+`first_steps` is the directory where all of our code is going to be stored, and the name of our package. If somebody installs this package, they refer to it in their code by that name. This typically looks like `from first_steps import something`.
+
+`pyproject.toml` is the package configuration file. The vast majority of the time, you're not going to be editing this manually.
+
+## Building our package
