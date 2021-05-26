@@ -8,6 +8,7 @@ tags = ["python", "packaging", "getting started", "beginner", "beginner question
 keywords = ["python", "packaging", "getting started", "beginner", "beginner questions", "tutorials", "python for beginners", "how to make a python package", "pip package", "pip", "pip packaging"]
 description = "Make a full commandline application, without any of the setup.py hassle!"
 showFullContent = false
+draft = false
 +++
 
 # Purpose
@@ -83,9 +84,15 @@ Right now, users of your package would have to import this by typing `from first
 from .increment import increment
 {{< /code >}}
 
-You can test this
+You can test this by dropping into your virtual environment's REPL with `poetry run python`:
 
-Now it's just `from first_steps import increment`. Easy! Now all we need is a commandline interface. Let's over-engineer the shit out of it so we can tour more of Poetry's features.
+{{< code language="python" >}}
+>>> from first_steps import increment
+>>> increment(1)
+2
+{{< /code >}}
+
+Easy! Now all we need is a commandline interface. Let's over-engineer the shit out of it so we can tour more of Poetry's features.
 
 ## Over-Engineering a CLI
 
@@ -98,4 +105,99 @@ Let's start by initializing our project's virtual environment and adding a depen
 
 {{< code language="bash" >}}
 $ poetry add click
+Using version ^8.0.1 for click
+
+Updating dependencies
+Resolving dependencies... (0.2s)
+
+Writing lock file
+
+Package operations: 1 install, 0 updates, 0 removals
+
+  • Installing click (8.0.1)
 {{< /code >}}
+
+While we're at it, let's add the ["Black" code formatter](https://pypi.org/project/black/) as a dev dependency. A dev dependency is a dependency that is only used when developing the package, and does not need to be shipped to the user.
+
+{{< code language="bash" >}}
+$ poetry add --dev black
+Using version ^21.5b1 for black
+
+Updating dependencies
+Resolving dependencies... (1.1s)
+
+Writing lock file
+
+Package operations: 6 installs, 0 updates, 0 removals
+
+  • Installing appdirs (1.4.4)
+  • Installing mypy-extensions (0.4.3)
+  • Installing pathspec (0.8.1)
+  • Installing regex (2021.4.4)
+  • Installing toml (0.10.2)
+  • Installing black (21.5b1)
+{{< /code >}}
+
+Now we need to configure `black` for our project. We're writing in modern (3.8+) Python here, so let's tell it that we wat that syntax. We can also increase maximum line length by a little bit while we're here.
+
+To do this, we'll add a section to our `pyproject.toml` file. This section can be located anywhere within the file, but I like to put it at the bottom.
+
+{{< code language="toml" title="pyproject.toml" >}}
+[tool.black]
+line-length = 95
+target-version = [ "py39",]
+{{< /code >}}
+
+Now let's make the file that will handle our user interaction.
+
+{{< code language="python" title="first_steps/cli.py" >}}
+import click
+from .increment import increment
+
+
+@click.command()
+@click.argument("number", type=int)
+def cli(number: int):
+    click.echo(
+        "{} has become {}!".format(
+            click.style(number, bold=True),
+            click.style(increment(number), bold=True, fg="green"),
+        )
+    )
+{{< /code >}}
+
+Now we have a Python function registered as a command through `click`, and all we have to do is give it a snazzy name. We'll call it `inc` because I'm not particularly creative.
+
+To make sure that the user can run `inc` as a command when they install our package, we need to go back into our project configuration and register a [script](https://python-poetry.org/docs/pyproject/#scripts).
+
+{{< code language="toml" title="pyproject.toml" >}}
+[tool.poetry.scripts]
+inc = "first_steps.cli:cli"
+{{< /code >}}
+
+You can test this out in your terminal now using `poetry`!
+
+{{< code language="bash" >}}
+$ poetry run inc 5
+5 has become 6!
+{{< /code >}}
+
+# Publishing our package
+
+This is the easiest part. Simply run `poetry publish --build` to build and publish your package in one step. You will be prompted for your PyPi credentials, and then you can upload your package!
+
+{{< code language="bash" >}}
+$ poetry publish --build
+Building first-steps (0.1.0)
+  - Building sdist
+  - Built first-steps-0.1.0.tar.gz
+  - Building wheel
+  - Built first_steps-0.1.0-py3-none-any.whl
+
+Publishing first-steps (0.1.0) to PyPI
+ - Uploading first-steps-0.1.0.tar.gz 100%
+{{< /code >}}
+
+The name `first-steps` is reserved by PyPi, so you'll have to use your imagination on your next package.
+
+Pretending it did go through and get published successfully, we could install this package like any other by running `pip install first-steps`.
