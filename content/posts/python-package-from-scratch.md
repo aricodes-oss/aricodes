@@ -25,6 +25,12 @@ In Python, the package manager is called `pip`. `pip`...installs packages. That'
 
 With [Poetry](https://python-poetry.org/), things look a lot more like using `npm` (or `cargo`, for Rust developers) - it's one tool that manages your project, your virtual environment, and your dependencies. In this post, I aim to teach you how to use Poetry effectively.
 
+## A quick note on virtual environments
+
+Virtual environments still remain the most effective way to isolate project dependencies from your system's Python packages. For that reason, Poetry (under the hood) does still use virtual environments to isolate your dependencies. Poetry handles them transparently and automatically for you. They're placed in `$HOME/.cache/pypoetry/virtualenvs` by default, if you ever want to explore them.
+
+`poetry run` will run a command or Python script inside of this virtualenv, `poetry add` adds dependencies inside of it, and so on. It's a huge quality of life improvement over manually juggling them.
+
 ## Installation
 
 Installing Poetry is as simple as running
