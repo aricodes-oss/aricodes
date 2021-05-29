@@ -15,9 +15,9 @@ draft = false
 
 There's not many [Perforce](https://www.perforce.com/) docker images out there, and I haven't found _any_ that are maintained and well documented. There's actually a pretty good reason for that - Perforce is _messy_. It leaves files all over the system, there's no real option to constrain it to a specific area, and it makes some assumptions about how you want your system to be run that don't really translate to a containerized environment very well.
 
-Fortunately, because Docker is magic, we can remedy most of these things. By the end of this, you'll have your own Perforce server running comfortably on your own infrastructure. We'll be using the industry standard container `docker-compose` orchestrator for these, but a similar configuration can be shipped to Docker Swarm and Kubernetes.
+Fortunately, because Docker is magic, we can remedy most of these things. By the end of this, you'll have your own Perforce server running comfortably on your own infrastructure. We'll be using the industry standard `docker-compose` container orchestrator for this, but a similar configuration can be shipped to Docker Swarm and Kubernetes.
 
-As this is targetted at people that *probably* aren't running large scale clustering software, we're going to stick with `docker-compose` and focus on a single server.
+As this is targetted at people that _probably_ aren't running large scale clustering software, we're going to stick with `docker-compose` and focus on a single server.
 
 # What is Perforce?
 
@@ -64,20 +64,14 @@ Let's define our service here.
 {{< code language="yaml" title="docker-compose.yml" >}}
 version: '3'
 services:
-  perforce:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    volumes:
-      - ./perforce-data:/perforce-data
-      - ./p4dctl.conf.d:/etc/perforce/p4dctl.conf.d
-      - ./dbs:/dbs
-    ports:
-      - 1666:1666
-    environment:
-      - P4PORT=1666
-      - P4ROOT=/perforce-data
+perforce:
+build:
+context: .
+dockerfile: Dockerfile
+restart: unless-stopped
+volumes: - ./perforce-data:/perforce-data - ./p4dctl.conf.d:/etc/perforce/p4dctl.conf.d - ./dbs:/dbs
+ports: - 1666:1666
+environment: - P4PORT=1666 - P4ROOT=/perforce-data
 {{< /code >}}
 
 Here we've defined our service with three volumes - one for data, one for configuration, and one for what Perforce refers to as "databases." Let's go and make those directories now.
@@ -100,22 +94,27 @@ Let's go fill out that `Dockerfile`!
 FROM ubuntu:focal
 
 # Update our main system
+
 RUN apt-get update
 RUN apt-get dist-upgrade -y
 
 # Get some dependencies for adding apt repositories
+
 RUN apt-get install -y wget gnupg
 
 # Add perforce repo
+
 RUN wget -qO - https://package.perforce.com/perforce.pubkey | apt-key add -
 RUN echo 'deb http://package.perforce.com/apt/ubuntu focal release' > /etc/apt
-/sources.list.d/perforce.list                                                
+/sources.list.d/perforce.list  
 RUN apt-get update
 
 # Actually install it
+
 RUN apt-get install -y helix-p4d
 
 # Go into our directory, start Perforce, and view the log outputs
+
 CMD cd /dbs && p4dctl start master && tail -F /perforce-data/logs/log
 {{< /code >}}
 
