@@ -119,7 +119,7 @@ RUN apt-get install -y helix-p4d
 CMD cd /dbs && p4dctl start master && tail -F /perforce-data/logs/log
 {{< /code >}}
 
-Aaaaaaaaand that's that! With `docker-compose`, volumes are not mounted until you reach the container entrypoint. The entrypoint, in this case, is defined with the `CMD` directory.
+Aaaaaaaaand that's that! With `docker-compose`, volumes are not mounted until you reach the container entrypoint. The entrypoint, in this case, is defined with the `CMD` directive. As such, we have to enter our `dbs` directory there and no earlier.
 
 # Populating the configuration directory
 
