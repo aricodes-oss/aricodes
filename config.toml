@@ -30,5 +30,10 @@ url = "/about"
 
 [[languages.en.menu.main]]
 identifier = "contact"
-name = "Contact Information"
+name = "Contact"
 url = "/contact"
+
+[[languages.en.menu.main]]
+identifier = "patreon"
+name = "Patreon"
+url = "https://www.patreon.com/aricodes"
