@@ -67,7 +67,7 @@ services:
   perforce:
     build:
       context: .
-        dockerfile: Dockerfile
+      dockerfile: Dockerfile
     restart: unless-stopped
     volumes:
       - ./perforce-data:/perforce-data
