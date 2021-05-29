@@ -72,12 +72,12 @@ services:
     volumes:
       - ./perforce-data:/perforce-data
       - ./p4dctl.conf.d:/etc/perforce/p4dctl.conf.d
-	  - ./dbs:/dbs
+      - ./dbs:/dbs
     ports:
       - 1666:1666
-	evironment:
-	  - P4PORT=1666
-	  - P4ROOT=/perforce-data
+    environment:
+      - P4PORT=1666
+      - P4ROOT=/perforce-data
 {{< /code >}}
 
 Here we've defined our service with three volumes - one for data, one for configuration, and one for what Perforce refers to as "databases." Let's go and make those directories now.
