@@ -82,18 +82,18 @@ def make_packet(command, data):
 # as much latency as possible, so send events the moment we have them
 def reader_proc(queue):
     while True:
-      msg = queue.get()
-      send(msg)
-      if msg == "DONE":
-        break
+        msg = queue.get()
+        send(msg)
+        if msg == "DONE":
+            break
 
 
 # Finally, our entrypoint
 def cli():
     if len(sys.argv) > 1:
-      ip = sys.argv[1]
+        ip = sys.argv[1]
     else:
-      ip = input("Enter the IP address of your Switch > ")
+        ip = input("Enter the IP address of your Switch > ")
 
     # Spawn up a queue and a second process to read from it
     pqueue = Queue()
