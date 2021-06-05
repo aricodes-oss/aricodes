@@ -196,7 +196,7 @@ def cli():
         sleep(0.00001)
 
 if __name__ == "__main__":
-  cli()
+    cli()
 {{< /code >}}
 
 Realistically, the only limit here is your imagination. I'm looking forward to working more with this incredible project in the future. Controlling a Switch remotely is only the tip of the iceberg when it comes to `sys-botbase` - you can actually read and write to arbitrary locations in memory over the same socket interface. It's not as focused or user friendly as it was with `sys-netcheat` (the project that this was based on, effectively presenting a "cheat engine"-esque commandline interface over a socket), but it's still early on in the project's lifespan.
