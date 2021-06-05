@@ -67,9 +67,11 @@ pygame.joystick.init()
 # Create a socket connection but don't connect it yet
 switch = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+
 # Utility function for formatting and sending data over the socket
 def send(data):
     switch.sendall((data + "\r\n").encode())
+
 
 # A "packet" here being the minimum of one command sent to the switch
 # In retrospect this doesn't necessarily need to exist,
