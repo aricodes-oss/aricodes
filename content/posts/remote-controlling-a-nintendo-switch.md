@@ -44,9 +44,7 @@ All of the code for this is available [here](https://github.com/markrawls/switch
 Let's take a look at the meat of it:
 
 {{< code language="python" >}}
-
 # Pygame is the easiest way to read joystick inputs I know of
-
 import pygame
 
 import os
@@ -57,54 +55,45 @@ from time import sleep
 from multiprocessing import Process, Queue
 
 # We need to map PyGame input codes to what sys-botbase is expecting
-
 from switch_relay.mapping import BUTTONS, TRIGGERS, STICKS, DPAD_X, DPAD_Y
 
 # This doesn't need to render anything, so stub out Pygame's video system
-
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 # ...then init Pygame and the joystick submodule
-
 pygame.init()
 pygame.joystick.init()
 
 # Create a socket connection but don't connect it yet
-
 switch = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Utility function for formatting and sending data over the socket
-
 def send(data):
-switch.sendall((data + "\r\n").encode())
+    switch.sendall((data + "\r\n").encode())
 
 # A "packet" here being the minimum of one command sent to the switch
-
 # In retrospect this doesn't necessarily need to exist,
-
 # but saves me some format string chicanery later
-
 def make_packet(command, data):
-return f"{command} {data}"
+    return f"{command} {data}"
+
 
 # A receiver process for all of our events - we want to avoid
-
 # as much latency as possible, so send events the moment we have them
-
 def reader_proc(queue):
-while True:
-msg = queue.get()
-send(msg)
-if msg == "DONE":
-break
+    while True:
+      msg = queue.get()
+      send(msg)
+      if msg == "DONE":
+        break
+
 
 # Finally, our entrypoint
-
 def cli():
-if len(sys.argv) > 1:
-ip = sys.argv[1]
-else:
-ip = input("Enter the IP address of your Switch > ")
+    if len(sys.argv) > 1:
+      ip = sys.argv[1]
+    else:
+      ip = input("Enter the IP address of your Switch > ")
 
     # Spawn up a queue and a second process to read from it
     pqueue = Queue()
@@ -206,8 +195,8 @@ ip = input("Enter the IP address of your Switch > ")
         # These microscopic sleeps help keep Python from slamming the CPU
         sleep(0.00001)
 
-if **name** == "**main**":
-cli()
+if __name__ == "__main__":
+  cli()
 {{< /code >}}
 
 Realistically, the only limit here is your imagination. I'm looking forward to working more with this incredible project in the future. Controlling a Switch remotely is only the tip of the iceberg when it comes to `sys-botbase` - you can actually read and write to arbitrary locations in memory over the same socket interface. It's not as focused or user friendly as it was with `sys-netcheat` (the project that this was based on, effectively presenting a "cheat engine"-esque commandline interface over a socket), but it's still early on in the project's lifespan.
