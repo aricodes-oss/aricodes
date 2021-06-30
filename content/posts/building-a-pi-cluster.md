@@ -61,7 +61,7 @@ As a forewarning, all of these links are Amazon Affiliate links.
 
 If that sounds like a lot of supplies or really expensive, that's because it is! It's stupidly expensive. It's also stupidly overpowered, even for what I'm using it for. 5 of the nodes are dedicated to crunching and seeds, and 3 of the nodes *have replaced every other server in my house*. That's a non-trivial amount of servers.
 
-This is *32* physical cores at 1.5GHz (or a little more with a light overclock I have applied, but don't do that) and *64GB* of DDR4 RAM. This cluster collectively makes a ridiculous machine.
+This is *32* physical cores at 1.5GHz (or a little more with a light overclock I have applied, but don't do that) and *64GB* of DDR4 RAM. This cluster collectively makes one ridiculous machine.
 
 # Corners you can cut
 
