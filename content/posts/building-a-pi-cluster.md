@@ -4,11 +4,11 @@ date = "2021-06-30T02:12:49-04:00"
 author = "Ari"
 authorTwitter = "realwillowtw" #do not include @
 cover = "/pi-cluster/splash.png"
-tags = ["raspberry pi", "docker", "cluster"]
+tags = ["raspberry pi", "docker", "cluster", "tutorials"]
 keywords = ["raspberry pi", "raspberry pi 4", "raspbian", "docker", "cluster", "cluster computing", "axiom verge", "randomizer", "docker swarm", "swarm mode", "kubernetes"]
 description = "Or the story of how I made something completely overkill"
 showFullContent = false
-draft = true
+draft = false
 +++
 
 Most people visiting this blog have probably heard of the Raspberry Pi before. I'd wager that most people visiting this blog actually *own* at least one or more of the devices. I've actually lost count of how many I own at this point, and I just added 8 more to that number. They're extremely useful and serve a wide variety of purposes.
@@ -27,7 +27,7 @@ I wanna get you prepared to build your own Pi cluster, and learn from my mistake
 
 # Why did you build this?
 
-I'm so glad you asked. Unfortunately, that would be a rant worthy of its own post. Good news: I will be making that post! For now though, let's just carry on with the cluster itself.
+I'm so glad you asked. Unfortunately, that would be a rant worthy of its own post. Good news: [I have made that post](/posts/axiom-verge-cluster-computation/)! For now though, let's just carry on with the cluster itself.
 
 # Why not Kubernetes?
 
@@ -241,4 +241,10 @@ Aaaaaand configure the docker daemon on each host to allow insecure communicatio
 }
 {{< /code >}}
 
-The hostnames and IP addresses will vary based on your network setup, so make sure you adjust those as needed.
+The hostnames and IP addresses will vary based on your network setup, so make sure you adjust those as needed. After that's set up, give every node one last reboot and you'll be good to go! Your nodes will now communicate amongst themselves and schedule tasks based on the available resources on each node.
+
+# What now?
+
+Now is up to your imagination. You can use this cluster for pretty much anything you would use any other system with Docker installed on it for. I've personally got mine running Plex media server, the AV seed ingest project, my dynamic DNS agent, and a couple of Twitch/Discord bots.
+
+I highly recommend reading the companion post to this one, describing [the insane brute-force search I built this for](/posts/axiom-verge-cluster-computation/).
