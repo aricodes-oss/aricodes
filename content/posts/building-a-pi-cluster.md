@@ -5,7 +5,7 @@ author = "Ari"
 authorTwitter = "realwillowtw" #do not include @
 cover = "/pi-cluster/splash.png"
 tags = ["raspberry pi", "docker", "cluster"]
-keywords = ["raspberry pi", "raspberry pi 4", "raspbian", "docker", "cluster", "cluster computing", "axiom verge", "randomizer"]
+keywords = ["raspberry pi", "raspberry pi 4", "raspbian", "docker", "cluster", "cluster computing", "axiom verge", "randomizer", "docker swarm", "swarm mode", "kubernetes"]
 description = "Or the story of how I made something completely overkill"
 showFullContent = false
 draft = true
@@ -28,6 +28,12 @@ I wanna get you prepared to build your own Pi cluster, and learn from my mistake
 # Why did you build this?
 
 I'm so glad you asked. Unfortunately, that would be a rant worthy of its own post. Good news: I will be making that post! For now though, let's just carry on with the cluster itself.
+
+# Why not Kubernetes?
+
+I'm going to level with you, The Internet, I'm not a fan of Kubernetes. I'm not running a Google-scale operation out of my house. I'm *really* not a fan of YAML. I don't need the complexity of Kubernetes, nor do I need the overhead associated with it. If I'm going to have to write YAML, it's going to be YAML that I already now - like `docker-compose` specifications. That's exactly what swarm mode runs off of.
+
+TL;DR "swarm mode fits my needs and involves less configuration"
 
 # What you need
 
@@ -65,7 +71,7 @@ If you opt not to get the cloudlet case, I would recommend not getting the PoE h
 
 # Imaging!
 
-Raspberry Pis are ARM devices. What the Raspberry Pi company won't tell you, however, is that they are 64-bit ARM devices. Raspbian ships as a 32-bit OS by default for legacy compatibility reasons, but we're more interested in fully utilizing the hardware and not having to manually rebuild every Docker image we want to use. For some reason the 64 bit builds are hidden pretty well, [but they're available here](https://downloads.raspberrypi.org/raspios_arm64/images/). Download that image, flash it to all of your SD cards, and make sure you put an empty file named `ssh` into the boot partition of each SD card.
+Raspberry Pis are ARM devices. What the Raspberry Pi company won't tell you, however, is that they are 64-bit ARM devices. Raspbian ships as a 32-bit OS by default for legacy compatibility reasons, but we're more interested in fully utilizing the hardware and not having to manually rebuild every Docker image we want to use. For some reason the 64 bit builds are hidden pretty well, [but they're available here](https://downloads.raspberrypi.org/raspios_arm64/images/). Download that image, flash it to all of your SD cards, and make sure you put an empty file named `ssh` into the boot partition of each SD card. This will enable the SSH daemon and allow you to connect to each of your Pis without needing to connect a keyboard and monitor.
 
 # Assembly!
 
@@ -85,11 +91,13 @@ This is where things get pretty specific to your setup. My router allows me to a
 
 # Provisioning!
 
+Boot up your Pis and let give them some time to resize their filesystem and come online. This can take a while, up to 5 or 10 minutes. *Do not unplug them while this is happening.* After that's done, you can carry on to actually provisioning them.
+
 Are you ready for the YAML part of the post? Because there's no way to escape the YAML part. Everything is YAML nowadays.
 
 Here's the Ansible playbook I use to provision all of the Pis. It authorizes my public key for SSH access as well as their own, and gives them open access between each other.
 
-*Not* pictured in this playbook is me changing all of their passwords away from the default.
+*Not* pictured in this playbook is me changing all of their passwords away from the default and changing their hostnames to `manager1` and `worker1` through `worker7`. I also installed and configured [tailscale](https://tailscale.com/) on all of them so that I can use them for CPU offload from my main hobby server without having to forward ports on my router. This adds a small amount of latency (~15-20ms) but is incredibly worth it for the security benefits and ease of configuration in my opinion.
 
 {{< code language="yaml" >}}
 ---
@@ -192,3 +200,45 @@ Here's the Ansible playbook I use to provision all of the Pis. It authorizes my 
 {{< /code >}}
 
 This also mounts my NAS as shared storage for them and ensures they mount those directories on boot by waiting for networking first.
+
+Once this is done, it's time to go in and connect all of the Pis via docker swarm. On your manager node, run `docker swarm init`. This will print out a command with a join token for your worker nodes - go run that on every one of your workers.
+
+You now have a docker swarm cluster! By routing to the IP address of any of the nodes, you can access the overlay network and therefore any services you have running on it. Right now, you have nothing on there. Let's make it a liiiiiittle bit more useful.
+
+# Adding visualization!
+
+Portainer is a popular visual cluster management tool that is web based. It also fortunately supports docker swarm right out of the box, and even has a preconfigured stack definition for you [available here](https://documentation.portainer.io/v2.0/deploy/ceinstallswarm/).
+
+SSH into your manager node and follow their instructions for downloading and deploying the stack:
+
+{{< code language="bash" >}}
+$ curl -L https://downloads.portainer.io/portainer-agent-stack.yml -o portainer-agent-stack.yml
+$ docker stack deploy -c portainer-agent-stack.yml portainer
+{{< /code >}}
+
+Go to one of your nodes (I have my manager node aliased as `cluster.gov` on my network) on port `9000` in your web browser to see the Portainer management UI. I primarily use this just to see which services are running where.
+
+# Adding a private registry!
+
+Sometimes you need custom built services designed specifically for your cluster. In my use case, this was a must have. Fortunately, deploying a private registry is as easy as creating the following service definition:
+
+{{< code language="yaml" >}}
+version: '3'
+services:
+  registry:
+    image: registry:2
+    ports:
+      - 5000:5000
+    volumes:
+      - /shared/registry:/var/lib/registry
+{{< /code >}}
+
+Aaaaaand configure the docker daemon on each host to allow insecure communications to that registry since it will be running solely on this cluster network:
+
+{{< code language="json" title="/etc/docker/daemon.json" >}}
+{
+        "insecure-registries": ["localhost", "cluster.gov:5000", "localhost:5000", "192.168.1.200:5000"]
+}
+{{< /code >}}
+
+The hostnames and IP addresses will vary based on your network setup, so make sure you adjust those as needed.
