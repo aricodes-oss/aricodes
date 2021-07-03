@@ -27,21 +27,7 @@ I wanna get you prepared to build your own Pi cluster, and learn from my mistake
 
 # Why did you build this?
 
-I'm so glad you asked.
-
-I'm one of the developers for the [free Axiom Verge randomizer DLC](https://www.axiomverge.com/blog/announcing-axiom-verges-first-ever-free-content-update-in-open-beta-now). There's a lot of complexity that goes into building a randomizer, particularly for a metroidvania, but I'll spare you the gory details. As part of the whole "making a quality product" thing, we really wanted to make sure the randomizer would not generate "dead seeds."
-
-A dead seed is defined as any seed that cannot be completed by the player. That is a *very* large definition. Fortunately, as speedrunners, we have a pretty good idea of what things are possible and what things are not. For instance, an item can not be located in an area that requires that item to get there. Proving that the randomizer cannot produce those kinds of seeds is easier said than done.
-
-We could, in theory, add a manual check in the code to make sure it doesn't generate those kinds of situations. How do we handle that though? Just come up with another seed? Shuffle the items again? And how do we scale that? There's over 130 unique items in Axiom Verge, each that provides various abilities to perform various checks. That code gets messy real quick.
-
-Clearly this is a problem for unit tests - provide your seed as an input, and make your assertions on the output of the randomization engine. This also has some scaling problems however - generating a seed is not computationally cheap. Dependent upon the machine it's running on, this can take around 700ms on the high end to generate before starting the game. This is negligible for a one-off operation that a heavy randomizer user would be running once an hour on average, but is a lot to cover our search space.
-
-# Our search space
-
-There's 3 logic levels, so each numeric seed has 3 different forms it can take. Seeds are (ultimately) stored as an unsigned 32 bit integer, so that's 4,294,967,295 unique numeric seeds. Arithmetic tells us that's 12,884,901,885 potential arrangements of items. There's likely a lot of overlap there, but we just don't know until we generate the seeds.
-
-So, let's generate the seeds. We built an SDK that isolates the randomizer engine from the game itself and allows us to generate arbitrary seeds and test their output. I modified this lightly to absolutely murder however many CPU cores it can grab and run seeds in parallel. On my desktop machine, this was estimated to take 2 straight weeks of redlining the CPU. Unfortunately, I use that. Thus, the cluster was born: a set of machines that do nothing but slowly churn out Axiom Verge randomizer seeds.
+I'm so glad you asked. Unfortunately, that would be a rant worthy of its own post. Good news: I will be making that post! For now though, let's just carry on with the cluster itself.
 
 # What you need
 
@@ -74,3 +60,135 @@ You can use Raspberry Pis with less memory on them.
 You can buy smaller micro SD cards for them (although I wouldn't go below 64gb, and those are pretty cheap).
 
 The cloudlet case is not strictly necessary. It cuts down on noise (enough that I would not run this cluster without it) and helps cooling performance, but eliminating that also gets rid of the breadboards + power supplies + jumper wires.
+
+If you opt not to get the cloudlet case, I would recommend not getting the PoE hats. They generate an appreciable amount of heat and the fans they come equipped with are the most obnoxious thing I have ever heard. The cloudlet case has its own (much quieter) fans that are significantly more effective. We do leave the PoE hat fans still attached and functional, but we aim to keep the systems cool enough that they do not turn on.
+
+# Imaging!
+
+Raspberry Pis are ARM devices. What the Raspberry Pi company won't tell you, however, is that they are 64-bit ARM devices. Raspbian ships as a 32-bit OS by default for legacy compatibility reasons, but we're more interested in fully utilizing the hardware and not having to manually rebuild every Docker image we want to use. For some reason the 64 bit builds are hidden pretty well, [but they're available here](https://downloads.raspberrypi.org/raspios_arm64/images/). Download that image, flash it to all of your SD cards, and make sure you put an empty file named `ssh` into the boot partition of each SD card.
+
+# Assembly!
+
+Screw the spacers onto your PoE hats, squish the hats onto the Pis, and attach the Pis to the cloudlet's acrylic plates by screwing into the standoffs on the PoE hats. Before inserting the plates into the case, make sure to mount the 4 included fans onto the inside of the case. Run the jumper wires for them out of the case through the holes underneath them. *Now* you can insert the plates with Pis on them into the case. It's a bit finnicky, but they click right in once you get them.
+
+Now it's time to set up cooling for our case before we turn it on. Take 8 male-to-male jumper wires and connect one end to the female jumper wires coming out from the fans. Remember which one goes to ground (the black wire) and which one goes to power (the red wire). Plug your breadboard power supply into the breadboard, and you'll have 2 rails on either side that are now powered. Connect the red wires to one of the + rails and the black wires to the - rails.
+
+These fans are designed to run at 5 volts, but will run with only 3.3v available if you need the cluster to run more quietly. I personally keep my cluster about 5 feet from my bed and find the quiet "whooshing" noise to be soothing white noise, unlike the whiny angry bee sounds of the PoE hats.
+
+![The cluster fan power supply](/pi-cluster/fan-psu.jpg)
+
+Make sure that this board is plugged in and the fans are on before you plug your Pis into your PoE switch. This will save your eardrums from so much pain.
+
+# Networking!
+
+This is where things get pretty specific to your setup. My router allows me to assign static local IPs to devices by mac address, so I did. I use 192.168.1.200-207 for mine. On first bootup I assigned them these addresses through my router and now they're guaranteed to get those addresses every time they boot. This helps with cluster resiliency and addressing.
+
+# Provisioning!
+
+Are you ready for the YAML part of the post? Because there's no way to escape the YAML part. Everything is YAML nowadays.
+
+Here's the Ansible playbook I use to provision all of the Pis. It authorizes my public key for SSH access as well as their own, and gives them open access between each other.
+
+*Not* pictured in this playbook is me changing all of their passwords away from the default.
+
+{{< code language="yaml" >}}
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Authorize SSH keys
+      ansible.posix.authorized_key:
+        user: pi
+        state: present
+        key: '{{ item }}'
+      with_file:
+        - ./id_rsa.pub
+        - ./pi_rsa.pub
+
+    - name: Copy SSH private key
+      copy:
+        src: ./pi_rsa
+        dest: /home/pi/.ssh/id_rsa
+        mode: '0600'
+
+    - name: Copy SSH public key
+      copy:
+        src: ./pi_rsa.pub
+        dest: /home/pi/.ssh/id_rsa.pub
+        mode: '0644'
+
+    - name: Run updates
+      apt:
+        update_cache: true
+        upgrade: dist
+
+    - name: Install packages
+      apt:
+        update_cache: true
+        pkg:
+          - python3
+          - python3-pip
+          - vim
+          - gnupg2
+          - pass
+          - curl
+
+    - name: Download the docker install script
+      command: curl -fsSL https://get.docker.com -o get-docker.sh
+
+    - name: Run it
+      command: sudo sh get-docker.sh
+
+    - name: Enable the services
+      service:
+        name: '{{ item }}'
+        enabled: true
+        state: started
+      loop:
+        - docker
+        - containerd
+
+    - name: Add pi user to docker group
+      user:
+        name: pi
+        groups: docker
+        append: yes
+
+    - name: Create mount points
+      file:
+        path: '/mnt/nfs/{{ item }}'
+        state: directory
+      loop:
+        - pi-cluster
+        - plex
+        - transmission
+
+    - name: Add NFS mounts
+      lineinfile:
+        path: /etc/fstab
+        line: '192.168.1.2:/{{ item }} /mnt/nfs/{{ item }} nfs4 defaults,user,relatime,rw 0 0'
+      loop:
+        - pi-cluster
+        - plex
+        - transmission
+
+    - name: Add the /shared symlink
+      file:
+        src: /mnt/nfs/pi-cluster
+        dest: /shared
+        state: link
+
+    - name: Wait for network on boot
+      command: raspi-config nonint do_boot_wait 0
+
+    - name: Resolve cluster hostnames locally
+      lineinfile:
+        path: /etc/hosts
+        line: '{{ item }}'
+      loop: "{{ lookup('file', './hosts-list.txt').splitlines() }}"
+
+    - name: Reboot
+      reboot:
+{{< /code >}}
+
+This also mounts my NAS as shared storage for them and ensures they mount those directories on boot by waiting for networking first.
