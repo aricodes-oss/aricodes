@@ -1,5 +1,5 @@
 +++
-title = "Cluster Computation for Axiom Verge"
+title = "Brute Forcing Every Axiom Verge Randomizer Seed"
 date = "2021-07-03T02:28:25-04:00"
 author = "Ari"
 authorTwitter = "realwillowtw" #do not include @
