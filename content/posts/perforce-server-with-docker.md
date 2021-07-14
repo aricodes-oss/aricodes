@@ -71,7 +71,6 @@ services:
 		restart: unless-stopped
 		volumes:
 			- ./perforce-data:/perforce-data
-			- ./p4dctl.conf.d:/etc/perforce/p4dctl.conf.d
 			- ./dbs:/dbs
 		environment:
 			- P4PORT=1666
@@ -112,7 +111,7 @@ RUN apt-get install -y wget gnupg
 
 RUN wget -qO - https://package.perforce.com/perforce.pubkey | apt-key add -
 RUN echo 'deb http://package.perforce.com/apt/ubuntu focal release' > /etc/apt
-/sources.list.d/perforce.list  
+/sources.list.d/perforce.list
 RUN apt-get update
 
 # Actually install it
@@ -132,6 +131,27 @@ Perforce, in all its majesty, will create files in our `etc` directory during in
 
 {{< code language="bash" >}}
 $ docker-compose run --rm perforce tar -cC /etc/perforce/p4dctl.conf.d . | tar -xC ./p4dctl.conf.d
+{{< /code >}}
+
+Now we just need to add one more volume to our `docker-compose` service declaration to have those files mounted in the running container:
+
+{{< code language="yaml" title="docker-compose.yml" >}}
+version: '3'
+services:
+	perforce:
+		build:
+			context: .
+			dockerfile: Dockerfile
+		restart: unless-stopped
+		volumes:
+			- ./perforce-data:/perforce-data
+      - ./p4dctl.conf.d:/etc/perforce/p4dctl.conf.d
+			- ./dbs:/dbs
+		environment:
+			- P4PORT=1666
+			- P4ROOT=/perforce-data
+		ports:
+			- 1666:1666
 {{< /code >}}
 
 Now we're ready to actually configure our server! Perforce includes a nice little helper script for this.
