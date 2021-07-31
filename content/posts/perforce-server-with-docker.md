@@ -130,7 +130,7 @@ Aaaaaaaaand that's that! With `docker-compose`, volumes are not mounted until yo
 Perforce, in all its majesty, will create files in our `etc` directory during installation that it requires to run its configuration script. Fortunately, we can grab those from our newly built image and stash them in our volume mount.
 
 {{< code language="bash" >}}
-$ docker-compose run --rm perforce tar -cC /etc/perforce/p4dctl.conf.d . | tar -xC ./p4dctl.conf.d
+$ docker-compose run -T --rm perforce tar czvf - -C /etc/perforce/p4dctl.conf.d  . | tar xvzf - -C p4dctl.conf.d/
 {{< /code >}}
 
 Now we just need to add one more volume to our `docker-compose` service declaration to have those files mounted in the running container:
