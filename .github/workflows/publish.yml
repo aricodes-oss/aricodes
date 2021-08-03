@@ -34,5 +34,5 @@ jobs:
         run: hugo
 
       - name: Deploy
-        run: rsync -vz ./* gh-actions@aricodes.net:/opt/aricodes/
+        run: rsync -avz ./* gh-actions@aricodes.net:/opt/aricodes/
         working-directory: ./public
