@@ -89,6 +89,8 @@ As a forewarning, all of the Amazon links in this article are Amazon affiliate l
 
 I've got 2 STL files here that can be printed through any given 3D printer, the only difference being the button arrangement. I personally went for the claw grip style in SLA printing, but you have options! The claw grip is significantly more ergonomic and places less strain on the thumb when pressing the down button, but some people do love the WASD-style diamond.
 
+Before giving you the files, I would like to take this moment to shoutout my dear friend who both designed and printed this part for me. He taught me how to use CAD for future projects and is just an all around great person. This space will be updated with a link to his portfolio and contact information should he ever publish such a thing.
+
 **Claw Grip:**
 
 ![Claw grip mod](/arcade-stick/claw-grip.png)
