@@ -72,7 +72,7 @@ Let's get to it!
 
 # Things you'll need
 
-As a forewarning, all of the Amazon links in this article are Amazon affiliate links. Purchasing through them helps support me at no extra cost to you, but I would remiss not to include this disclaimer so you could avoid that if you desired.
+As a forewarning, all of the Amazon links in this article are Amazon affiliate links. Purchasing through them helps support me at no extra cost to you, but I would be remiss not to include this disclaimer so you could avoid that if you desired.
 
 **Tools:**
 
