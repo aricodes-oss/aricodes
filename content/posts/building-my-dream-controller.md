@@ -3,12 +3,12 @@ title = "Building My Dream Controller"
 date = "2021-09-06T18:49:16-04:00"
 author = "Ari"
 authorTwitter = "realwillowtw" #do not include @
-cover = ""
+cover = "/arcade-stick/cover.jpg"
 tags = ["gaming", "speedrunning", "controller", "arcade stick", "mods", "guides", "tutorials"]
 keywords = ["gaming", "speedrunning", "controller", "arcade stick", "fight stick", "b0xx", "frame1", "8bitdo", "mods", "hardware mods", "hardware modification", "cad", "3d printing", "sla", "guides", "tutorials", "how-to"]
 description = "Want a B0XX but don't want to pay a premium and wait forever? Me too. Let's make our own."
 showFullContent = false
-draft = true
+draft = false
 +++
 
 # Just get to the instructions!
@@ -137,9 +137,13 @@ At this point, take the 4 arcade buttons you bought and pop them into the 3D pri
 
 Now pay careful attention to which button is meant for which direction. On the claw grip this is obvious, but the diamond grip is symmetrical so watch out!
 
+![Both grip styles](/arcade-stick/both-grips.jpg)
+
 Taking our janky connector, connect each pair of wires to the two terminals on each button. It does not matter which terminal is connected to which wire as long as it's the paired set you distinguished earlier. The order for these is printed on the control board where the connector goes in, so make sure the right buttons have the right wires!
 
 At this point, you're probably saying "Oh my god, these spade connectors are a tight fit. Are you sure they're the right ones?" - Yes. They are the right ones. Spade connectors can be an *extremely* tight fit, I (once more) used some pliers to push them firmly onto the pins to ensure optimal contact and a firm connection.
+
+![Wiring visual](/arcade-stick/wiring.jpg)
 
 # Seating the final product
 
