@@ -3,6 +3,11 @@ type: docker
 name: publish
 
 steps:
+  - name: Greet
+    image: alpine
+    commands:
+      - echo hello world
+
   - name: Build
     image: ubuntu:latest
     commands:
