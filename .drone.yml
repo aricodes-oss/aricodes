@@ -7,11 +7,3 @@ steps:
     image: alpine
     commands:
       - echo hello world
-
-  - name: Build
-    image: ubuntu:latest
-    commands:
-      - apt-get update
-      - apt-get install hugo
-      - hugo
-      - ls public
