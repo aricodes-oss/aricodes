@@ -12,13 +12,17 @@ steps:
     commands:
       - git submodule update --init --recursive
 
-  - name: publish
+  - name: build
     image: ubuntu
     commands:
       - apt-get update
-      - apt-get install -y hugo rsync
+      - apt-get install -y hugo
       - hugo
+
+  - name: publish
+    image: instrumentisto/rsync-ssh
       - echo $PRIVATE_KEY >> id_rsa
+      - chmod 600 id_rsa
       - cd public
       - rsync -avz -e 'ssh -i ../id_rsa -o StrictHostKeyChecking=no' --progress ./* root@aricodes.net:/opt/aricodes/
     environment:
