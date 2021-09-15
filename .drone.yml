@@ -7,7 +7,15 @@ platform:
   arch: arm64
 
 steps:
-  - name: Greet
-    image: alpine
+  - name: Publish
+    image: ubuntu
     commands:
-      - echo hello world
+      - apt-get update
+      - apt-get install hugo rsync
+      - hugo
+      - echo $PRIVATE_KEY >> id_rsa
+      - cd public
+      - rsync -avz -e 'ssh -i ./id_rsa' --progress ./* root@aricodes.net:/opt/aricodes/
+    environment:
+      PRIVATE_KEY:
+        from_secret: PRIVATE_KEY
