@@ -22,8 +22,9 @@ steps:
   - name: publish
     image: instrumentisto/rsync-ssh
     commands:
-      - echo $PRIVATE_KEY >> id_rsa
+      - echo "$PRIVATE_KEY" >> id_rsa
       - chmod 600 id_rsa
+      - cat id_rsa
       - cd public
       - rsync -avz -e 'ssh -i ../id_rsa -o StrictHostKeyChecking=no' --progress ./* root@aricodes.net:/opt/aricodes/
     environment:
