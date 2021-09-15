@@ -20,7 +20,7 @@ steps:
       - hugo
       - echo $PRIVATE_KEY >> id_rsa
       - cd public
-      - rsync -avz -e 'ssh -i ./id_rsa' --progress ./* root@aricodes.net:/opt/aricodes/
+      - rsync -avz -e 'ssh -i ../id_rsa' --progress ./* root@aricodes.net:/opt/aricodes/
     environment:
       PRIVATE_KEY:
         from_secret: PRIVATE_KEY
