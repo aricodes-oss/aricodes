@@ -7,12 +7,12 @@ platform:
   arch: arm64
 
 steps:
-  - name: Clone
+  - name: submodules
     image: alpine/git
     commands:
       - git submodule update --init --recursive
 
-  - name: Publish
+  - name: publish
     image: ubuntu
     commands:
       - apt-get update
