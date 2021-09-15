@@ -11,7 +11,7 @@ steps:
     image: ubuntu
     commands:
       - apt-get update
-      - apt-get install hugo rsync
+      - apt-get install -y hugo rsync
       - hugo
       - echo $PRIVATE_KEY >> id_rsa
       - cd public
