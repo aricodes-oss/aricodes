@@ -17,10 +17,9 @@ steps:
       - git submodule update --init --recursive
 
   - name: build
-    image: ubuntu
+    image: alpine
     commands:
-      - apt-get update
-      - apt-get install -y hugo
+      - apk add hugo
       - hugo
 
   - name: publish
