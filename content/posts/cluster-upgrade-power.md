@@ -69,6 +69,31 @@ Using that expensive college education I dropped out of, I have successfully ded
 
 You will want some headroom so that sudden surges (such as when all nodes boot at once) aren't an issue, so let's aim for a 200W power supply (or 5V 40A).
 
-# Things you'll need
+# Required materials
 
 As is usual, all amazon links are affiliate links.
+
+| Item | Price in USD |
+| ---- | ----- |
+| [15A AC pigtail cable](https://amzn.to/3xwBQTd) | $15 |
+| [DC barrel plug (2.1mm x 5.5mm) pigtails](https://amzn.to/310Ec0p) | $9 |
+| [8 DC barrel plug (2.1mm x 5.5mm) to USB-C elbow connectors](https://amzn.to/2Zw6YWr) | $6 for 2 |
+| [14ga wire](https://amzn.to/3G9Xccj) | $23 |
+| [Meanwell LRS-200-5](https://amzn.to/3CUX9Pf) | $37 |
+| [Power distribution terminal block](https://amzn.to/3nWtilp) | $23 |
+
+**Total**: $130 with the wire spools, $108 without. You may already have 14ga or 18ga wire laying about from other projects.
+
+# Optional materials/niceties
+
+We'll be making/extending some wires here, so you'll need either heatshrink (recommended) or electrical tape (jank approved) to cover the joins and prevent them from shorting.
+
+I also used some eyelet connectors because I don't fuck around when it comes to handling mains power and I wanted that to have good contact with the PSU and no exposed wire for me to accidentally touch. I already had this kit from [building my fight stick](/posts/building-my-dream-controller/), but it's included here.
+
+| Item | Price in USD |
+| ---- | ------------ |
+| [Heat gun](https://amzn.to/3CXWA7y) | $30 |
+| [Heat shrink tubing](https://amzn.to/3cV9FUn) | $10 |
+| [Eyelet/spade/fork connectors](https://amzn.to/3ldd2dO) | $18 |
+
+**Total**: $58, although if you work on electronics regularly you likely have all of this already laying around and they will last for quite a few projects.
