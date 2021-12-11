@@ -35,6 +35,8 @@ We'll also assume that you're familiar with very basic command line navigation. 
 
 If you want to learn, I **highly** recommend going to [linuxcommand.org](https://linuxcommand.org/). That's where I learned basic terminal literacy, and you can go through everything you need to know in the span of a few hours.
 
+***Update 2021/12/122*** - Marc Wilson from [PCWDLD](https://www.pcwdld.com) sent me an email with a Linux commandline cheatsheet that should be useful for people that want a quicker way to get some shell literacy. You can [check it out here](https://www.pcwdld.com/linux-commands-cheat-sheet). Thanks Marc!!
+
 That aside, let's dig into it!
 
 # The problems with Perforce
