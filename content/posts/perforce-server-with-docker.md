@@ -72,6 +72,7 @@ services:
 			dockerfile: Dockerfile
 		restart: unless-stopped
 		volumes:
+      #- ./p4dctl.conf.d:/etc/perforce/p4dctl.conf.d
 			- ./perforce-data:/perforce-data
 			- ./dbs:/dbs
 		environment:
@@ -81,11 +82,15 @@ services:
 			- 1666:1666
 {{< /code >}}
 
-Here we've defined our service with three volumes - one for data, one for configuration, and one for what Perforce refers to as "databases." Let's go and make those directories now.
+Here we've defined our service with three volumes - one for configuration, one for data, and one for what Perforce refers to as "databases."
+
+One of them, the configuration volume, has been commented out so that it does not mount yet. This is because we need to generate those files before running our server for the first time.
+
+Let's go and make those directories now.
 
 {{< code language="bash" >}}
-$ mkdir perforce-data
 $ mkdir p4dctl.conf.d
+$ mkdir perforce-data
 $ mkdir dbs
 {{< /code >}}
 
@@ -112,8 +117,7 @@ RUN apt-get install -y wget gnupg
 # Add perforce repo
 
 RUN wget -qO - https://package.perforce.com/perforce.pubkey | apt-key add -
-RUN echo 'deb http://package.perforce.com/apt/ubuntu focal release' > /etc/apt
-/sources.list.d/perforce.list
+RUN echo 'deb http://package.perforce.com/apt/ubuntu focal release' > /etc/apt/sources.list.d/perforce.list
 RUN apt-get update
 
 # Actually install it
@@ -122,7 +126,7 @@ RUN apt-get install -y helix-p4d
 
 # Go into our directory, start Perforce, and view the log outputs
 
-CMD cd /dbs && p4dctl start master && tail -F /perforce-data/logs/log
+CMD chown -R perforce:perforce /perforce-data && cd /dbs && p4dctl start master && tail -F /perforce-data/logs/log
 {{< /code >}}
 
 Aaaaaaaaand that's that! With `docker-compose`, volumes are not mounted until you reach the container entrypoint. The entrypoint, in this case, is defined with the `CMD` directive. As such, we have to enter our `dbs` directory there and no earlier.
@@ -132,10 +136,10 @@ Aaaaaaaaand that's that! With `docker-compose`, volumes are not mounted until yo
 Perforce, in all its majesty, will create files in our `etc` directory during installation that it requires to run its configuration script. Fortunately, we can grab those from our newly built image and stash them in our volume mount.
 
 {{< code language="bash" >}}
-$ docker-compose run -T --rm perforce tar czvf - -C /etc/perforce/p4dctl.conf.d  . | tar xvzf - -C p4dctl.conf.d/
+$ docker-compose run -T --rm perforce tar czf - -C /etc/perforce/p4dctl.conf.d  . | tar xvzf - -C p4dctl.conf.d/
 {{< /code >}}
 
-Now we just need to add one more volume to our `docker-compose` service declaration to have those files mounted in the running container:
+Now we just need to uncomment that last volume from our `docker-compose` service definition to have those files mounted in the running container:
 
 {{< code language="yaml" title="docker-compose.yml" >}}
 version: '3'
@@ -146,8 +150,8 @@ services:
 			dockerfile: Dockerfile
 		restart: unless-stopped
 		volumes:
-			- ./perforce-data:/perforce-data
       - ./p4dctl.conf.d:/etc/perforce/p4dctl.conf.d
+			- ./perforce-data:/perforce-data
 			- ./dbs:/dbs
 		environment:
 			- P4PORT=1666
@@ -177,5 +181,24 @@ And that's it! You've now got a Perforce server running on port `1666` on this m
 # Troubleshooting
 
 A number of issues can potentially come up during this. Try spinning up your service without detaching it (`docker-compose up --build` - note the lack of `-d` in that command) to see the log output. If it's running but detached, you can run `docker-compose logs -f` to view the log output in real time.
+
+## "P4PORT is not set"
+
+If you get an error stating that `P4PORT` is not set, that means that it is unable to access its data ddirectory. This is because Perforce has its own user ID and group ID that it runs under, and there is no simple way to change that without manually editing the configuration. The default UID and GID numbers are `101`, and you can change ownership of that directory by running the following command -
+
+{{< code language="bash" >}}
+$ sudo chown -R 101:101 perforce-data
+{{< /code >}}
+
+...although the latest revision of the `Dockerfile` in this post does do that by itself. That, however, can cause the following problem -
+
+## "Cannot read `perforce-data`" (or "can't stat `perforce-data`")
+
+You're running Docker as an unprivileged user and are unable to read the generated perforce data files. There are two options to resolve this, with the first being much easier -
+
+1. Run the service as root (`sudo docker-compose up --build -d`)
+2. Add your user to a group with GID `101`
+
+You can also modify the perforce configuration file (`master.conf` in your `p4dctl.conf.d` directory) to set the `Umask` and `Owner` fields to something more compatible with your host system user layout, but that's significantly more involved and will not be covered here. Perforce _does_ validate that the `Umask` and `Owner` fields are correct, so if your service does not start after messing with that, you have done something wrong in your permissions configuration.
 
 I do not personally use Perforce and devised this tutorial for a friend, but I have verified on multiple environments that it is working. If you find any errors or have any questions, always feel free to [email me](/contact)!
