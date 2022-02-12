@@ -144,7 +144,7 @@ Package operations: 6 installs, 0 updates, 0 removals
   • Installing black (21.5b1)
 {{< /code >}}
 
-Now we need to configure `black` for our project. We're writing in modern (3.8+) Python here, so let's tell it that we wat that syntax. We can also increase maximum line length by a little bit while we're here.
+Now we need to configure `black` for our project. We're writing in modern (3.8+) Python here, so let's tell it that we want that syntax. We can also increase maximum line length by a little bit while we're here.
 
 To do this, we'll add a section to our `pyproject.toml` file. This section can be located anywhere within the file, but I like to put it at the bottom.
 
