@@ -1,7 +1,7 @@
 +++
 title = "Building an 8 Node Raspberry Pi 4 Cluster (with Docker Swarm)"
 date = "2021-06-30T02:12:49-04:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 cover = "/pi-cluster/splash.png"
 tags = ["raspberry pi", "docker", "cluster", "tutorials"]

@@ -1,7 +1,7 @@
 +++
 title = '"How do I Learn to Code?"'
 date = "2021-04-24T02:16:19-04:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 tags = ["getting started", "beginner questions", "beginner"]
 description = "I get asked a lot about how to learn to code. The answer isn't as easy and clear cut as I would really like it be."

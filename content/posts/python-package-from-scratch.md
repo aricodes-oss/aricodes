@@ -1,7 +1,7 @@
 +++
 title = "Making a Modern Python Package with Poetry"
 date = "2021-05-24T19:40:42-04:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 cover = ""
 tags = ["python", "packaging", "getting started", "beginner", "beginner questions", "tutorials"]

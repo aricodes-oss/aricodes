@@ -1,7 +1,7 @@
 +++
 title = "Fixing \"DAP Init Failed\" from your Picoprobe"
 date = "2022-01-10T01:21:00-05:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 cover = "/picoprobe/cover.jpg"
 tags = ["rp2040", "raspberry pi", "pico", "debugging", "short"]

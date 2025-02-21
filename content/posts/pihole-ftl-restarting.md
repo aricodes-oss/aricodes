@@ -1,7 +1,7 @@
 +++
 title = "What to do if Pihole-FTL is constantly restarting"
 date = "2021-08-07T17:41:29-04:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 cover = "https://wp-cdn.pi-hole.net/wp-content/uploads/2018/12/pihole-text-logo-white.png.webp"
 tags = ["raspberry pi", "docker", "debugging", "short", "dns"]

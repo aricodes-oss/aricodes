@@ -1,7 +1,7 @@
 +++
 title = "Making a Perforce Server With Docker"
 date = "2021-05-28T16:49:12-04:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 cover = "https://techmeetups.com/wp-content/uploads/2013/08/Perforce.png"
 tags = ["perforce", "docker", "getting started", "tutorials", "intermediate"]

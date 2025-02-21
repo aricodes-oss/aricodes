@@ -1,7 +1,7 @@
 +++
 title = "Remote Controlling a Nintendo Switch for Fun and Profit"
 date = "2021-06-04T20:08:01-04:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 cover = ""
 tags = ["nintendo", "switch", "homebrew", "projects"]

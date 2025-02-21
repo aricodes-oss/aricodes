@@ -1,7 +1,7 @@
 +++
 title = "PiHole Container Exiting as \"Complete\" After 3 Minutes"
 date = "2021-08-09T18:03:56-04:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 cover = "https://wp-cdn.pi-hole.net/wp-content/uploads/2018/12/pihole-text-logo-white.png.webp"
 tags = ["raspberry pi", "docker", "debugging", "short", "dns"]

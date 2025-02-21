@@ -1,7 +1,7 @@
 +++
 title = "Building My Dream Controller"
 date = "2021-09-06T18:49:16-04:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 cover = "/arcade-stick/cover.jpg"
 tags = ["gaming", "speedrunning", "controller", "arcade stick", "mods", "guides", "tutorials"]

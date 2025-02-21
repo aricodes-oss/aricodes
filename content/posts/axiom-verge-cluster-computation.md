@@ -1,7 +1,7 @@
 +++
 title = "Brute Forcing Every Axiom Verge Randomizer Seed"
 date = "2021-07-03T02:28:25-04:00"
-author = "Ari"
+author = "Aria"
 authorTwitter = "realwillowtw" #do not include @
 cover = "https://images.squarespace-cdn.com/content/4f7c8818e4b000a129e38a56/1391298296571-8MUWBQFA0DJXFPL3SARS/CanvasBackground.png?content-type=image%2Fpng"
 tags = ["game development", "cluster", "analysis", "deep dive"]
