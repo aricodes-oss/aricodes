@@ -8,6 +8,10 @@ contentTypeName = "posts"
 fullWidthTheme = false
 centerTheme = true
 
+[params.page.code]
+copy = true
+maxShownLines = -1
+
 [languages]
 
 [languages.en.params]
